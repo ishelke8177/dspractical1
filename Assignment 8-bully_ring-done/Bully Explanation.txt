@@ -1,0 +1,7 @@
+In this implementation, the Process class represents a single process in the distributed system. Each process has a process ID, a flag indicating whether it is the coordinator, and a list of other processes in the network. The addProcess() method is used to add neighboring processes to the current process's network.
+
+The election() method initiates the election process. The current process iterates over the processes in its network and sends an election message to any process with a higher process ID. If a process receives an election message, it continues the election by forwarding it to higher processes in the network. Once the highest process is reached, it announces itself as the coordinator using the announceCoordinator() method.
+
+The coordinatorChanged() method is called when a process receives an announcement from a new coordinator. If the current process was previously the coordinator but receives a different coordinator ID, it updates its coordinator flag accordingly.
+
+In the main() method, a sample network of processes is created, and the election is initiated by the process with ID 1 (`p
