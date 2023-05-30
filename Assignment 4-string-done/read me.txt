@@ -1,0 +1,9 @@
+To run the application:
+
+Compile the IDL file: idlj -fall StringConcat.idl
+Compile the server and client files: javac *.java
+Start the server: java StringConcatServer
+In a separate terminal, start the client
+
+
+

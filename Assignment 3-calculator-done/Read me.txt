@@ -1,0 +1,14 @@
+To run the application:
+
+Compile the IDL file: idlj -fall Calculator.idl
+Compile the server and client files: javac *.java
+Start the server: java CalculatorServer
+In a separate terminal, start the client: java CalculatorClient
+
+The server creates an instance of the CalculatorImpl class, which implements the Calculator interface defined in the IDL file. The server then binds the object reference with a name in the naming service using the CORBA naming context.
+
+The client retrieves the calculator object reference from the naming service and performs calculator operations by invoking methods on the object reference.
+
+The server and client communicate using the ORB (Object Request Broker) provided by the CORBA framework. The ORB handles the object brokering, marshaling and unmarshaling of method invocations and returns between the server and client.
+
+This example demonstrates how CORBA enables distributed object communication and object brokering, allowing the client to invoke methods on a remote object as if it were a local object.

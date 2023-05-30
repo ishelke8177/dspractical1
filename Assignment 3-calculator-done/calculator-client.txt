@@ -1,0 +1,79 @@
+// Calculator.idl:
+
+module CalculatorApp {
+    interface Calculator {
+        double add(in double num1, in double num2);
+        double subtract(in double num1, in double num2);
+        double multiply(in double num1, in double num2);
+        double divide(in double num1, in double num2);
+    };
+};
+
+// CalculatorImpl.java:
+
+import CalculatorApp.CalculatorPOA;
+
+public class CalculatorImpl extends CalculatorPOA {
+    @Override
+    public double add(double num1, double num2) {
+        return num1 + num2;
+    }
+
+    @Override
+    public double subtract(double num1, double num2) {
+        return num1 - num2;
+    }
+
+    @Override
+    public double multiply(double num1, double num2) {
+        return num1 * num2;
+    }
+
+    @Override
+    public double divide(double num1, double num2) {
+        if (num2 != 0) {
+            return num1 / num2;
+        } else {
+            throw new ArithmeticException("Division by zero!");
+        }
+    }
+}
+
+// CalculatorServer.java:
+
+import org.omg.CORBA.*;
+import org.omg.CosNaming.*;
+
+public class CalculatorServer {
+    public static void main(String[] args) {
+        try {
+            // Create and initialize the ORB
+            ORB orb = ORB.init(args, null);
+
+            // Create the calculator object
+            CalculatorImpl calculatorImpl = new CalculatorImpl();
+
+            // Get a reference to the root POA and activate the object
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("RootPOA");
+            POA rootPOA = POAHelper.narrow(objRef);
+            rootPOA.the_POAManager().activate();
+
+            // Associate the calculator object with a unique object ID
+            objRef = rootPOA.servant_to_reference(calculatorImpl);
+
+            // Bind the object reference with a name in the naming service
+            NamingContextExt ncRef = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
+            NameComponent[] nameComponents = ncRef.to_name("Calculator");
+            ncRef.rebind(nameComponents, objRef);
+
+            System.out.println("Calculator server is running...");
+
+            // Wait for invocations from clients
+            orb.run();
+        } catch (Exception e) {
+            System.err.println("Calculator server exception: " + e);
+            e.printStackTrace();
+        }
+    }
+}
+

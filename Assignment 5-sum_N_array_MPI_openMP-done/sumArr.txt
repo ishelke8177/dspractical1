@@ -1,0 +1,45 @@
+import mpi.*;
+
+public class DistributedArraySum {
+    public static void main(String[] args) {
+        MPI.Init(args);
+
+        int rank = MPI.COMM_WORLD.Rank();
+        int size = MPI.COMM_WORLD.Size();
+        
+        int[] array = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // The array to be summed
+        int totalElements = array.length;
+        int elementsPerProcessor = totalElements / size;
+        
+        int[] localArray = new int[elementsPerProcessor];
+
+        // Scatter the array elements to different processors
+        MPI.COMM_WORLD.Scatter(array, 0, elementsPerProcessor, MPI.INT, localArray, 0, elementsPerProcessor, MPI.INT, 0);
+
+        // Calculate the sum of local elements
+        int localSum = 0;
+        for (int i = 0; i < elementsPerProcessor; i++) {
+            localSum += localArray[i];
+        }
+
+        // Gather the intermediate sums from all processors to the root (rank 0)
+        int[] allSums = new int[size];
+        MPI.COMM_WORLD.Gather(new int[] {localSum}, 0, 1, MPI.INT, allSums, 0, 1, MPI.INT, 0);
+
+        if (rank == 0) {
+            System.out.println("Intermediate sums:");
+            for (int i = 0; i < size; i++) {
+                System.out.println("Processor " + i + ": " + allSums[i]);
+            }
+
+            int finalSum = 0;
+            for (int i = 0; i < size; i++) {
+                finalSum += allSums[i];
+            }
+
+            System.out.println("Final sum: " + finalSum);
+        }
+
+        MPI.Finalize();
+    }
+}

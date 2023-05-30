@@ -1,0 +1,9 @@
+In this example, we use the MPI library to initialize the MPI environment and retrieve the rank (process ID) and size (total number of processes). The array is divided equally among the processors, and each processor receives its portion of the array using the Scatter operation.
+
+Each processor then calculates the sum of its local elements and stores it in the localSum variable. Next, the intermediate sums from all processors are gathered to the root process (rank 0) using the Gather operation.
+
+If the rank is 0 (root), it displays the intermediate sums calculated by each processor and calculates the final sum by summing up all the intermediate sums.
+
+To compile and run this program, you'll need the MPI library and the corresponding Java bindings installed. You can use a tool like MPJ Express (http://mpj-express.org/) to execute the Java MPI program.
+
+Please note that the actual implementation may vary depending on the MPI library and the specific configuration of your distributed system.

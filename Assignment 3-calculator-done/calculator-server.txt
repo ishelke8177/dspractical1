@@ -1,0 +1,43 @@
+// CalculatorClient.java:
+
+import org.omg.CORBA.*;
+import org.omg.CosNaming.*;
+
+public class CalculatorClient {
+    public static void main(String[] args) {
+        try {
+            // Create and initialize the ORB
+            ORB orb = ORB.init(args, null);
+
+            // Get a reference to the naming service
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+            NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+
+            // Resolve the calculator object reference
+            NameComponent[] nameComponents = ncRef.to_name("Calculator");
+            CalculatorApp.Calculator calculator = CalculatorApp.CalculatorHelper.narrow(ncRef.resolve(nameComponents));
+
+            // Perform calculator operations
+            double num1 = 10;
+            double num2 = 5;
+
+            double sum = calculator.add(num1, num2);
+            System.out.println("Sum: " + sum);
+
+            double difference = calculator.subtract(num1, num2);
+            System.out.println("Difference: " + difference);
+
+            double product = calculator.multiply(num1, num2);
+            System.out.println("Product: " + product);
+
+            double quotient = calculator.divide(num1, num2);
+            System.out.println("Quotient: " + quotient);
+
+            // Shutdown the ORB
+            orb.shutdown(true);
+        } catch (Exception e) {
+            System.err.println("Calculator client exception: " + e);
+            e.printStackTrace();
+        }
+    }
+}
